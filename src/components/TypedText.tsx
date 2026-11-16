@@ -12,21 +12,17 @@ type TypedTextProps = {
   speed?: number;
 };
 
-/** Types `text` out once on mount, with a blinking caret. */
-export function TypedText({ text, label = text, startDelay = 400, speed = 90 }: TypedTextProps) {
+/** Types `text` out once on mount, followed by a caret that keeps blinking. */
+export function TypedText({ text, label = text, startDelay = 300, speed = 55 }: TypedTextProps) {
   const chars = Array.from(text);
   const [count, setCount] = useState(0);
-  const [showCaret, setShowCaret] = useState(true);
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduceMotion) {
-      timers.push(setTimeout(() => {
-        setCount(chars.length);
-        setShowCaret(false);
-      }, 0));
+      timers.push(setTimeout(() => setCount(chars.length), 0));
     } else {
       let t = startDelay;
       for (let i = 1; i <= chars.length; i++) {
@@ -34,7 +30,6 @@ export function TypedText({ text, label = text, startDelay = 400, speed = 90 }: 
         t += speed * (0.6 + Math.random() * 0.8) + (chars[i - 2] === "," ? speed * 2 : 0);
         timers.push(setTimeout(() => setCount(i), t));
       }
-      timers.push(setTimeout(() => setShowCaret(false), t + 2500));
     }
 
     return () => timers.forEach(clearTimeout);
@@ -48,9 +43,8 @@ export function TypedText({ text, label = text, startDelay = 400, speed = 90 }: 
         <span className="typed-placeholder invisible">{text}</span>
         <span className="typed-text absolute inset-0">
           {chars.slice(0, count).join("")}
-          {showCaret && (
-            <span className="ml-[0.05em] inline-block h-[0.85em] w-[0.06em] translate-y-[0.08em] animate-blink bg-current" />
-          )}
+          {/* negative margin: the caret takes no width, so it never wraps to a new line */}
+          <span className="-mr-[0.11em] ml-[0.05em] inline-block h-[0.85em] w-[0.06em] translate-y-[0.08em] bg-current motion-safe:animate-blink" />
         </span>
       </span>
       {/* without JavaScript, just show the text */}
