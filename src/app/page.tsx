@@ -6,7 +6,7 @@ import { TypedText } from "@/components/TypedText";
 import { Window } from "@/components/Window";
 import { site } from "@/lib/site";
 
-const PHOTO = "/photo.jpeg";
+const PHOTO = "/gif.gif";
 const hasPhoto = existsSync(join(process.cwd(), "public", PHOTO));
 
 const skills = [
@@ -65,10 +65,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="w-full max-w-sm self-start lg:mt-[1.375rem] lg:w-[17.7rem]">
-              <div className="relative aspect-[736/414] w-full bg-neutral-200">
+            <div className="w-full max-w-sm self-start border-[0.3rem] border-dotted border-black bg-white p-[0.35rem] lg:mt-[1.375rem] lg:w-[17.7rem]">
+              <div className="relative aspect-[350/197] w-full bg-neutral-200">
                 {hasPhoto && (
-                  <Image src={PHOTO} alt="" fill sizes="(min-width: 1024px) 20vw, 384px" className="object-contain" />
+                  <Image src={PHOTO} alt="" fill unoptimized className="object-contain" />
                 )}
               </div>
             </div>
