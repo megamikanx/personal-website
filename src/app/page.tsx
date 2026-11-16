@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import Image from "next/image";
 import { NavGraph } from "@/components/NavGraph";
+import { TypedText } from "@/components/TypedText";
 import { Window } from "@/components/Window";
 import { site } from "@/lib/site";
 
@@ -22,8 +23,8 @@ export default function Home() {
     <main className="flex min-h-svh flex-col gap-8 px-4 py-10 lg:block lg:p-0">
       {/* On lg+ this is the 1440×1024 design frame (1rem = 16 design px). */}
       <div className="contents lg:relative lg:mx-auto lg:block lg:h-[64rem] lg:w-[90rem]">
-        <h1 className="font-narrow text-5xl leading-none lg:absolute lg:left-[4.25rem] lg:top-[7.5rem] lg:text-[5rem]">
-          hello, i&rsquo;m Stephanie <span aria-hidden>☺</span>
+        <h1 className="font-narrow text-5xl leading-none lg:absolute lg:left-[4.25rem] lg:top-[5rem] lg:text-[5rem]">
+          <TypedText text="hello, i’m Stephanie ☺" label="hello, i’m Stephanie" />
         </h1>
 
         <Window id="about" title="about me" className="lg:absolute lg:left-[4rem] lg:top-[15.75rem] lg:h-[43rem] lg:w-[61.5rem]">
@@ -64,7 +65,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="w-full max-w-sm self-start border-[0.3rem] border-dotted border-black bg-white p-[0.35rem] lg:mt-[1.375rem] lg:w-[17.7rem]">
+            <div className="w-full max-w-sm self-start lg:mt-[1.375rem] lg:w-[17.7rem]">
               <div className="relative aspect-[736/414] w-full bg-neutral-200">
                 {hasPhoto && (
                   <Image src={PHOTO} alt="" fill sizes="(min-width: 1024px) 20vw, 384px" className="object-contain" />

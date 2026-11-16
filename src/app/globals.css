@@ -9,6 +9,16 @@
   --font-thonburi: Thonburi, "Helvetica Neue", Arial, sans-serif;
 }
 
+@theme {
+  --animate-blink: blink 1s steps(1) infinite;
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
 /*
  * On large screens the home page is laid out on the 1440×1024 Figma frame.
  * 1rem = 16 design px, scaled so the whole frame fits the viewport.
