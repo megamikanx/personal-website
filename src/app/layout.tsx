@@ -9,6 +9,11 @@ const maruMonica = localFont({
   variable: "--font-maru-monica",
 });
 
+const sciFied = localFont({
+  src: "./fonts/SciFied2002.ttf",
+  variable: "--font-sci-fied",
+});
+
 // Fallback for visitors who don't have Arial Narrow installed.
 const archivoNarrow = Archivo_Narrow({
   variable: "--font-archivo-narrow",
@@ -27,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${maruMonica.variable} ${archivoNarrow.variable} antialiased`}
+      className={`${maruMonica.variable} ${sciFied.variable} ${archivoNarrow.variable} antialiased`}
     >
       <body className="min-h-svh overflow-x-hidden">
         <WindowManagerProvider>{children}</WindowManagerProvider>

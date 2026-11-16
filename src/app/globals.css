@@ -5,6 +5,7 @@
   --color-link: #2424f2;
 
   --font-pixel: var(--font-maru-monica), "Courier New", monospace;
+  --font-scifi: var(--font-sci-fied), "Arial Narrow", Arial, sans-serif;
   --font-narrow: "Arial Narrow", var(--font-archivo-narrow), Arial, sans-serif;
   --font-thonburi: Thonburi, "Helvetica Neue", Arial, sans-serif;
 }

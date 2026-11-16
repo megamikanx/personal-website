@@ -30,7 +30,7 @@ export default function Home() {
         <Window id="about" title="about me" className="lg:absolute lg:left-[4rem] lg:top-[15.75rem] lg:h-[43rem] lg:w-[61.5rem]">
           <section className="flex flex-col-reverse gap-6 p-5 font-pixel text-lg leading-tight lg:flex-row lg:justify-between lg:gap-0 lg:px-[3.2rem] lg:pt-[1.875rem] lg:text-[1.5rem] lg:leading-none">
             <div className="lg:w-[33rem]">
-              <h2 className="flex h-14 w-52 items-center justify-center rounded-[50%] bg-black font-narrow text-3xl text-white lg:h-[4.0625rem] lg:w-[16.5rem] lg:text-[2.25rem]">
+              <h2 className="flex h-14 w-52 items-center justify-center rounded-[50%] bg-black font-scifi text-3xl text-white lg:h-[4.0625rem] lg:w-[16.5rem] lg:text-[1.875rem]">
                 about me
               </h2>
 
