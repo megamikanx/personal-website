@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useWindowManager } from "@/components/WindowManager";
 
 type WindowProps = {
@@ -14,6 +14,8 @@ type WindowProps = {
   compact?: boolean;
   /** Stacking order before the window is first clicked. */
   initialZ?: number;
+  /** Hidden until opened with the window manager's `open(id)`, e.g. from the nav. */
+  startClosed?: boolean;
 };
 
 const clamp = (v: number, max: number) => Math.min(Math.max(v, 0), max);
@@ -29,13 +31,23 @@ export function Window({
   className = "",
   compact = false,
   initialZ = 1,
+  startClosed = false,
 }: WindowProps) {
   const wm = useWindowManager();
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [maximized, setMaximized] = useState(false);
   const drag = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
 
-  if (wm.hidden.some((h) => h.id === id)) return null;
+  // When a window appears after being opened, make sure it's on screen (matters on phones).
+  const scrollIntoView = useCallback(
+    (el: HTMLDivElement | null) => {
+      if (el && startClosed) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    },
+    [startClosed],
+  );
+
+  const isOpen = !startClosed || wm.opened.includes(id);
+  if (!isOpen || wm.hidden.some((h) => h.id === id)) return null;
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (maximized || e.button !== 0 || (e.target as HTMLElement).closest("button")) return;
@@ -60,7 +72,8 @@ export function Window({
   const close = () => {
     setOffset({ x: 0, y: 0 });
     setMaximized(false);
-    wm.hide({ id, title, kind: "closed" });
+    if (startClosed) wm.dismiss(id);
+    else wm.hide({ id, title, kind: "closed" });
   };
 
   const style: React.CSSProperties = maximized
@@ -69,6 +82,7 @@ export function Window({
 
   return (
     <div
+      ref={scrollIntoView}
       role="dialog"
       aria-label={title}
       onPointerDownCapture={() => wm.focus(id)}
@@ -122,9 +136,7 @@ export function Window({
       </div>
       {/* page */}
       <div
-        className={`relative flex-1 rounded-[0.35em] bg-white text-[1rem] shadow-[inset_0_0_0.5em_rgba(0,0,0,0.1)] ${
-          maximized ? "overflow-auto" : ""
-        }`}
+        className="relative min-h-0 flex-1 overflow-auto rounded-[0.35em] bg-white text-[1rem] shadow-[inset_0_0_0.5em_rgba(0,0,0,0.1)]"
       >
         {children}
       </div>

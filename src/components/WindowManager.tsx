@@ -6,10 +6,15 @@ type Hidden = { id: string; title: string; kind: "minimized" | "closed" };
 
 type WindowManager = {
   hidden: Hidden[];
+  /** Windows that start closed and have been opened (e.g. from the nav). */
+  opened: string[];
   z: Record<string, number>;
   focus: (id: string) => void;
   hide: (entry: Hidden) => void;
   restore: (id: string) => void;
+  open: (id: string) => void;
+  /** Fully close a window that starts closed; it can be reopened with `open`. */
+  dismiss: (id: string) => void;
 };
 
 const Ctx = createContext<WindowManager | null>(null);
@@ -23,6 +28,7 @@ export function useWindowManager() {
 /** Tracks stacking order and hidden windows, and renders the taskbar. */
 export function WindowManagerProvider({ children }: { children: React.ReactNode }) {
   const [hidden, setHidden] = useState<Hidden[]>([]);
+  const [opened, setOpened] = useState<string[]>([]);
   const [z, setZ] = useState<Record<string, number>>({});
   const top = useRef(10);
 
@@ -42,8 +48,21 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
     [focus],
   );
 
+  const open = useCallback(
+    (id: string) => {
+      setOpened((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      restore(id);
+    },
+    [restore],
+  );
+
+  const dismiss = useCallback((id: string) => {
+    setOpened((prev) => prev.filter((o) => o !== id));
+    setHidden((prev) => prev.filter((h) => h.id !== id));
+  }, []);
+
   return (
-    <Ctx.Provider value={{ hidden, z, focus, hide, restore }}>
+    <Ctx.Provider value={{ hidden, opened, z, focus, hide, restore, open, dismiss }}>
       {children}
       {hidden.length > 0 && (
         <div
