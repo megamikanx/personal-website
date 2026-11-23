@@ -2,9 +2,11 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import Image from "next/image";
 import { Experience } from "@/components/Experience";
+import { MusicLine } from "@/components/MusicLine";
 import { NavGraph } from "@/components/NavGraph";
 import { TypedText } from "@/components/TypedText";
 import { Window } from "@/components/Window";
+import { getPlaylist } from "@/lib/playlist";
 import { site } from "@/lib/site";
 
 const PHOTO = "/gif.gif";
@@ -19,14 +21,20 @@ const skills = [
 
 const linkClass = "text-link hover:underline";
 
-export default function Home() {
+export default async function Home() {
+  const tracks = await getPlaylist();
+
   return (
     <main className="flex min-h-svh flex-col gap-8 px-4 py-10 lg:block lg:p-0">
       {/* On lg+ this is the 1440×1024 design frame (1rem = 16 design px). */}
       <div className="contents lg:relative lg:mx-auto lg:block lg:h-[64rem] lg:w-[90rem]">
-        <h1 className="font-narrow text-5xl leading-none lg:absolute lg:left-[4.25rem] lg:top-[5rem] lg:text-[5rem]">
+        <h1 className="font-narrow text-5xl leading-none lg:absolute lg:left-[4.25rem] lg:top-[4.5rem] lg:text-[5rem]">
           <TypedText text="hello, i’m Stephanie ☺" label="hello, i’m Stephanie" />
         </h1>
+
+        <div className="lg:absolute lg:left-[4.25rem] lg:top-[11.75rem] lg:w-[59.5rem]">
+          <MusicLine tracks={tracks} />
+        </div>
 
         <Window id="about" title="about me" className="lg:absolute lg:left-[4rem] lg:top-[15.75rem] lg:h-[43rem] lg:w-[61.5rem]">
           <section className="flex flex-col-reverse gap-6 p-5 font-pixel text-lg leading-tight lg:flex-row lg:justify-between lg:gap-0 lg:px-[3.2rem] lg:pt-[1.875rem] lg:text-[1.5rem] lg:leading-none">
