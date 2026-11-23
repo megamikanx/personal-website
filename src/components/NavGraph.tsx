@@ -1,19 +1,43 @@
+"use client";
+
 import Link from "next/link";
+import { useWindowManager } from "@/components/WindowManager";
 import { navNodes } from "@/lib/site";
 
 const rem = (px: number) => `${px / 16}rem`;
 
 function NodeLink({
-  href,
+  node,
   className,
   style,
   children,
 }: {
-  href: string;
+  node: (typeof navNodes)[number];
   className: string;
   style?: React.CSSProperties;
   children: React.ReactNode;
 }) {
+  const wm = useWindowManager();
+  const { href, window: windowId } = node;
+
+  if (windowId) {
+    // Real link, so it still works without JavaScript or when opened in a new tab.
+    return (
+      <a
+        href={href}
+        className={className}
+        style={style}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+          e.preventDefault();
+          wm.open(windowId);
+        }}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return href.startsWith("http") ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={className} style={style}>
       {children}
@@ -46,7 +70,7 @@ export function NavGraph() {
         {navNodes.map((n) => (
           <NodeLink
             key={n.label}
-            href={n.href}
+            node={n}
             style={{ left: rem(n.x), top: rem(n.y) }}
             className="group pointer-events-auto absolute flex -translate-y-1/2 items-center font-thonburi text-[1.625rem]"
           >
@@ -69,7 +93,7 @@ export function NavGraph() {
         {navNodes.map((n) => (
           <li key={n.label}>
             <NodeLink
-              href={n.href}
+              node={n}
               className="flex items-center gap-2 font-thonburi text-lg"
             >
               <span className="size-6 rounded-full bg-white" />

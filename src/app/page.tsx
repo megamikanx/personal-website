@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import Image from "next/image";
+import { Experience } from "@/components/Experience";
 import { NavGraph } from "@/components/NavGraph";
 import { TypedText } from "@/components/TypedText";
 import { Window } from "@/components/Window";
@@ -97,6 +98,16 @@ export default function Home() {
               </a>
             </p>
           </section>
+        </Window>
+
+        {/* opened from the "experience" circle */}
+        <Window
+          id="experience"
+          title="experience"
+          startClosed
+          className="lg:absolute lg:left-[3rem] lg:top-[9.75rem] lg:h-[46.25rem] lg:w-[65.625rem]"
+        >
+          <Experience />
         </Window>
 
         <NavGraph />
