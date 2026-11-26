@@ -26,8 +26,8 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-svh flex-col gap-8 px-4 py-10 lg:block lg:p-0">
-      {/* On lg+ this is the 1440×1024 design frame (1rem = 16 design px). */}
-      <div className="contents lg:relative lg:mx-auto lg:block lg:h-[64rem] lg:w-[90rem]">
+      {/* On lg+ this is the 1440-wide design frame (1rem = 16 design px); the first 1024px fill the screen. */}
+      <div className="contents lg:relative lg:mx-auto lg:block lg:h-[114.5rem] lg:w-[90rem]">
         <h1 className="font-narrow text-5xl leading-none lg:absolute lg:left-[4.25rem] lg:top-[4.5rem] lg:text-[5rem]">
           <TypedText text="hello, i’m Stephanie ☺" label="hello, i’m Stephanie" />
         </h1>
@@ -108,12 +108,11 @@ export default async function Home() {
           </section>
         </Window>
 
-        {/* opened from the "experience" circle */}
+        {/* below the first screen; the "experience" circle scrolls here */}
         <Window
           id="experience"
           title="experience"
-          startClosed
-          className="lg:absolute lg:left-[3rem] lg:top-[9.75rem] lg:h-[46.25rem] lg:w-[65.625rem]"
+          className="lg:absolute lg:left-[16rem] lg:top-[64rem] lg:h-[43rem] lg:w-[61.5rem]"
         >
           <Experience />
         </Window>

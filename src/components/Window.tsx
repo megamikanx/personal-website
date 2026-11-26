@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { useWindowManager } from "@/components/WindowManager";
+import { useRef, useState } from "react";
+import { useWindowManager, windowDomId } from "@/components/WindowManager";
 
 type WindowProps = {
   /** Unique id, used for stacking order and the taskbar. */
@@ -14,8 +14,6 @@ type WindowProps = {
   compact?: boolean;
   /** Stacking order before the window is first clicked. */
   initialZ?: number;
-  /** Hidden until opened with the window manager's `open(id)`, e.g. from the nav. */
-  startClosed?: boolean;
 };
 
 const clamp = (v: number, max: number) => Math.min(Math.max(v, 0), max);
@@ -31,23 +29,13 @@ export function Window({
   className = "",
   compact = false,
   initialZ = 1,
-  startClosed = false,
 }: WindowProps) {
   const wm = useWindowManager();
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [maximized, setMaximized] = useState(false);
   const drag = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
 
-  // When a window appears after being opened, make sure it's on screen (matters on phones).
-  const scrollIntoView = useCallback(
-    (el: HTMLDivElement | null) => {
-      if (el && startClosed) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    },
-    [startClosed],
-  );
-
-  const isOpen = !startClosed || wm.opened.includes(id);
-  if (!isOpen || wm.hidden.some((h) => h.id === id)) return null;
+  if (wm.hidden.some((h) => h.id === id)) return null;
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (maximized || e.button !== 0 || (e.target as HTMLElement).closest("button")) return;
@@ -72,8 +60,7 @@ export function Window({
   const close = () => {
     setOffset({ x: 0, y: 0 });
     setMaximized(false);
-    if (startClosed) wm.dismiss(id);
-    else wm.hide({ id, title, kind: "closed" });
+    wm.hide({ id, title, kind: "closed" });
   };
 
   const style: React.CSSProperties = maximized
@@ -82,12 +69,12 @@ export function Window({
 
   return (
     <div
-      ref={scrollIntoView}
+      id={windowDomId(id)}
       role="dialog"
       aria-label={title}
       onPointerDownCapture={() => wm.focus(id)}
       style={style}
-      className={`flex flex-col rounded-[0.6em] border border-[#d2d2d2] bg-[#ececec] px-[0.75em] pb-[0.75em] shadow-[inset_0_0_0_0.15em_#f8f8f8,0_0.25em_0.75em_rgba(0,0,0,0.08)] ${
+      className={`flex scroll-mt-6 flex-col rounded-[0.6em] border border-[#d2d2d2] bg-[#ececec] px-[0.75em] pb-[0.75em] shadow-[inset_0_0_0_0.15em_#f8f8f8,0_0.25em_0.75em_rgba(0,0,0,0.08)] ${
         compact ? "text-[0.55rem]" : "text-[1rem]"
       } ${maximized ? "" : "relative"} ${className}`}
     >

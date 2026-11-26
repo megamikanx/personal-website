@@ -6,16 +6,16 @@ type Hidden = { id: string; title: string; kind: "minimized" | "closed" };
 
 type WindowManager = {
   hidden: Hidden[];
-  /** Windows that start closed and have been opened (e.g. from the nav). */
-  opened: string[];
   z: Record<string, number>;
   focus: (id: string) => void;
   hide: (entry: Hidden) => void;
   restore: (id: string) => void;
-  open: (id: string) => void;
-  /** Fully close a window that starts closed; it can be reopened with `open`. */
-  dismiss: (id: string) => void;
+  /** Bring a window back if hidden, raise it, and scroll it into view. */
+  reveal: (id: string) => void;
 };
+
+/** DOM id of a window's root element. */
+export const windowDomId = (id: string) => `window-${id}`;
 
 const Ctx = createContext<WindowManager | null>(null);
 
@@ -28,7 +28,6 @@ export function useWindowManager() {
 /** Tracks stacking order and hidden windows, and renders the taskbar. */
 export function WindowManagerProvider({ children }: { children: React.ReactNode }) {
   const [hidden, setHidden] = useState<Hidden[]>([]);
-  const [opened, setOpened] = useState<string[]>([]);
   const [z, setZ] = useState<Record<string, number>>({});
   const top = useRef(10);
 
@@ -48,21 +47,24 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
     [focus],
   );
 
-  const open = useCallback(
+  const reveal = useCallback(
     (id: string) => {
-      setOpened((prev) => (prev.includes(id) ? prev : [...prev, id]));
       restore(id);
+      // wait for a restored window to render before scrolling to it
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          document
+            .getElementById(windowDomId(id))
+            ?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        }),
+      );
     },
     [restore],
   );
 
-  const dismiss = useCallback((id: string) => {
-    setOpened((prev) => prev.filter((o) => o !== id));
-    setHidden((prev) => prev.filter((h) => h.id !== id));
-  }, []);
-
   return (
-    <Ctx.Provider value={{ hidden, opened, z, focus, hide, restore, open, dismiss }}>
+    <Ctx.Provider value={{ hidden, z, focus, hide, restore, reveal }}>
       {children}
       {hidden.length > 0 && (
         <div

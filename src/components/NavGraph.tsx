@@ -21,7 +21,7 @@ function NodeLink({
   const { href, window: windowId } = node;
 
   if (windowId) {
-    // Real link, so it still works without JavaScript or when opened in a new tab.
+    // Real anchor link, so it still jumps there without JavaScript.
     return (
       <a
         href={href}
@@ -30,7 +30,7 @@ function NodeLink({
         onClick={(e) => {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
           e.preventDefault();
-          wm.open(windowId);
+          wm.reveal(windowId);
         }}
       >
         {children}
