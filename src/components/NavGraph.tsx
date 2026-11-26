@@ -21,7 +21,7 @@ function NodeLink({
   const { href, window: windowId } = node;
 
   if (windowId) {
-    // Real link, so it still works without JavaScript or when opened in a new tab.
+    // Real anchor link, so it still jumps there without JavaScript.
     return (
       <a
         href={href}
@@ -30,7 +30,7 @@ function NodeLink({
         onClick={(e) => {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
           e.preventDefault();
-          wm.open(windowId);
+          wm.reveal(windowId);
         }}
       >
         {children}
@@ -54,7 +54,7 @@ export function NavGraph() {
   return (
     <nav aria-label="Main">
       {/* large screens: positioned on the design frame */}
-      <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-[64rem] lg:block">
         <svg
           className="absolute inset-0 size-full"
           viewBox="0 0 1440 1024"
