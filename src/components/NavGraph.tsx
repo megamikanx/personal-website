@@ -54,7 +54,7 @@ export function NavGraph() {
   return (
     <nav aria-label="Main">
       {/* large screens: positioned on the design frame */}
-      <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-[64rem] lg:block">
         <svg
           className="absolute inset-0 size-full"
           viewBox="0 0 1440 1024"
