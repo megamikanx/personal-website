@@ -3,7 +3,7 @@ export const site = {
   email: "stephanie.min5240@gmail.com",
   linkedin: "https://www.linkedin.com/in/stephanie-sy-min/",
   github: "https://github.com/megamikanx",
-  blog: "https://blog.naver.com/blossom524",
+  blog: "https://bbqbandit.blog.fc2.com/",
   resume: "/resume.pdf",
 };
 
